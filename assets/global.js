@@ -988,10 +988,10 @@ class VariantSelects extends HTMLElement {
     if(fieldRadio != null){
       this.options.unshift(fieldRadio.value);
     }
-    const dropDown_new = document.getElementById('Option-template--20479416959279__main-1');
+    const dropDown_new = document.getElementById('.select__select');
     
-    const disable_byClass = document.getElementById('ProductSubmitButton-template--20479416959279__main');
-    const disable_byClass2 = document.getElementsByClassName('shopify-payment-button');
+    const disable_byClass = document.getElementById('[name="add"]');
+    const disable_byClass2 = document.getElementsByClassName('.product-form__buttons .shopify-payment-button button');
     if(fieldRadio){
       if(dropDown_new.value == ''){
         disable_byClass.style.pointerEvents = 'none';
@@ -1254,7 +1254,7 @@ class VariantRadios extends VariantSelects {
 //just that this radio selector will now take the second required value to match variant from the select-box(drop-down)
   updateOptions() {
     const fieldsets = Array.from(this.querySelectorAll('fieldset'));
-    const selectField = document.getElementById('Option-template--20479416959279__main-1');
+    const selectField = document.getElementById('.select__select');
     
     this.options = fieldsets.map((fieldset) => {
       return Array.from(fieldset.querySelectorAll('input')).find((radio) => radio.checked).value;
@@ -1265,8 +1265,8 @@ class VariantRadios extends VariantSelects {
       this.options.push('Small');
     }
     if(selectField.value ===  '') {
-      const disable_byClass = document.getElementById('ProductSubmitButton-template--20479416959279__main');
-      const disable_byClass2 = document.getElementsByClassName('shopify-payment-button');
+      const disable_byClass = document.getElementById('[name="add"]');
+      const disable_byClass2 = document.getElementsByClassName('.product-form__buttons .shopify-payment-button button');
       disable_byClass.style.pointerEvents = 'none';
       disable_byClass.style.opacity = '0.5';
       disable_byClass2[0].style.pointerEvents = 'none';
