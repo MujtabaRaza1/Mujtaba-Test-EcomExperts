@@ -12,6 +12,33 @@ class CartRemoveButton extends HTMLElement {
 
 customElements.define('cart-remove-button', CartRemoveButton);
 
+//created a funtion to remove the bundle product from the cart if the HandBag product is removed fromthe cart
+const removeFromCart = async () => {
+  //fetching cart
+  const cartResponse = await fetch('/cart.js');
+  const cartData1 = await cartResponse.json();
+
+  //creating new data in case bundle product exists without the main product
+  const formData1 = new FormData();
+  const addedBundleProduct = 46373014110511;
+  formData1.append('id', addedBundleProduct);
+  formData1.append('quantity', '0');
+
+  //checking if main product exists
+  const itemWithVariantIdExists = cartData1.items.some(item => item.variant_id == '46376429420847');
+
+  if(!itemWithVariantIdExists){ //if the main product in not in cart then check for the bundle product
+    const bundleProductExistInCart = cartData1.items.some(item => item.variant_id == '46373014110511');
+    if(bundleProductExistInCart){
+      //in case the bundle product exists without the main product removing it from cart as well
+      await fetch('/cart/change.js', {
+        method: 'POST',
+        body: formData1
+      });
+      window.location.reload();
+    }
+  }
+}
 class CartItems extends HTMLElement {
   constructor() {
     super();
@@ -119,6 +146,8 @@ class CartItems extends HTMLElement {
       })
       .then((state) => {
         const parsedState = JSON.parse(state);
+        //our function will be called every time when the cart updates in any manner
+        removeFromCart();
         const quantityElement =
           document.getElementById(`Quantity-${line}`) || document.getElementById(`Drawer-quantity-${line}`);
         const items = document.querySelectorAll('.cart-item');
