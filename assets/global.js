@@ -965,6 +965,7 @@ class VariantSelects extends HTMLElement {
     this.updatePickupAvailability();
     this.removeErrorMessage();
     this.updateVariantStatuses();
+    this.renderRelatedMedia(); //calling the new function created to render alternate media images on the product page
 
     if (!this.currentVariant) {
       this.toggleAddButton(true, '', true);
@@ -977,9 +978,36 @@ class VariantSelects extends HTMLElement {
       this.updateShareUrl();
     }
   }
-
+//updated this existing function to now handle inputs from multiple option selectors
+// as now this drop-down slector will now take the second selected option from the radio selector
+//also applying not buyable condition if the selected option is Unselected(by default or user selected)
   updateOptions() {
     this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+    const fieldRadio = document.querySelector('input[name="Color"]:checked');
+    
+    if(fieldRadio != null){
+      this.options.unshift(fieldRadio.value);
+    }
+    const dropDown_new = document.querySelector('.select__select');
+    const addtocartForm=document.getElementById(`product-form-${this.dataset.section}`);
+    const disable_byClass = addtocartForm.querySelector('[name="add"]');
+    const disable_byClass2 = addtocartForm.querySelector('.product-form__buttons .shopify-payment-button button');
+    if(fieldRadio){
+      if(dropDown_new.value == ''){
+        disable_byClass.style.pointerEvents = 'none';
+        disable_byClass.style.opacity = '0.5';
+        disable_byClass2.style.pointerEvents = 'none';
+        disable_byClass2.style.opacity = '0.4';
+      }else{
+        disable_byClass.style.pointerEvents = 'all';
+        disable_byClass.style.opacity = '1';
+        disable_byClass2.style.pointerEvents = 'all';
+        disable_byClass2.style.opacity = '1';
+      }
+    }else{
+      //
+    }
+    
   }
 
   updateMasterId() {
@@ -1043,6 +1071,20 @@ class VariantSelects extends HTMLElement {
         .map((variantOption) => variantOption[`option${index + 1}`]);
       this.setInputAvailability(optionInputs, availableOptionInputsValue);
     });
+  }
+//Created a new function to render and block alternate existing images related to the current product
+  renderRelatedMedia() {
+    if (this.currentVariant.featured_image && this.currentVariant.featured_image.alt) {
+       //shows the images for the specific product variant that matches its (alt tag)
+      document.querySelectorAll('[thumbnail-alt]').forEach(img => img.style.display = 'none');
+      const currentImgAlt = this.currentVariant.featured_image.alt
+      const thumbnailSelector = `[thumbnail-alt = '${currentImgAlt}']`
+      document.querySelectorAll(thumbnailSelector).forEach(img => img.style.display = 'block');
+    }
+    else{
+      //showing all thumbnails regardless of selected variant
+      document.querySelectorAll('[thumbnail-alt]').forEach(img => img.style.display = 'block');
+    }
   }
 
   setInputAvailability(listOfOptions, listOfAvailableOptions) {
@@ -1207,12 +1249,30 @@ class VariantRadios extends VariantSelects {
       }
     });
   }
-
+//updated this existing function to now handle inputs from multiple option selectors same as before
+// repeats the same functionality as the other updateOptions function above
+//just that this radio selector will now take the second required value to match variant from the select-box(drop-down)
   updateOptions() {
     const fieldsets = Array.from(this.querySelectorAll('fieldset'));
+    const selectField = document.querySelector('.select__select');
+    
     this.options = fieldsets.map((fieldset) => {
       return Array.from(fieldset.querySelectorAll('input')).find((radio) => radio.checked).value;
     });
+    if(selectField.value != ''){
+      this.options.push(selectField.value);
+    }else{
+      this.options.push('Small');
+    }
+    if(selectField.value ===  '') {
+      const addtocartForm=document.getElementById(`product-form-${this.dataset.section}`);
+    const disable_byClass = addtocartForm.querySelector('[name="add"]');
+    const disable_byClass2 = addtocartForm.querySelector('.product-form__buttons .shopify-payment-button button');
+      disable_byClass.style.pointerEvents = 'none';
+      disable_byClass.style.opacity = '0.5';
+      disable_byClass2.style.pointerEvents = 'none';
+      disable_byClass2.style.opacity = '0.4';
+    }
   }
 }
 

@@ -10,7 +10,10 @@
   {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
 {%- unless product.has_only_default_variant -%}
-  {%- if block.settings.picker_type == 'button' -%}
+{% comment %}
+   Adjusted the if condition here as we now need both the selctors in 1 product
+ {% endcomment %}
+  
     <variant-radios
       id="variant-radios-{{ section.id }}"
       class="no-js-hidden"
@@ -22,16 +25,18 @@
       {{ block.shopify_attributes }}
     >
       {%- for option in product.options_with_values -%}
+        {% unless option.name == "Size" %}
         <fieldset class="js product-form__input">
           <legend class="form__label">{{ option.name }}</legend>
           {% render 'product-variant-options', product: product, option: option, block: block %}
         </fieldset>
+      {% endunless %}
       {%- endfor -%}
       <script type="application/json">
         {{ product.variants | json }}
       </script>
     </variant-radios>
-  {%- else -%}
+
     <variant-selects
       id="variant-selects-{{ section.id }}"
       class="no-js-hidden"
@@ -43,10 +48,13 @@
       {{ block.shopify_attributes }}
     >
       {%- for option in product.options_with_values -%}
+        {%- unless option.name == "Color" -%}
         <div class="product-form__input product-form__input--dropdown">
+          
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
           </label>
+          
           <div class="select">
             <select
               id="Option-{{ section.id }}-{{ forloop.index0 }}"
@@ -54,18 +62,35 @@
               name="options[{{ option.name | escape }}]"
               form="{{ product_form_id }}"
             >
+              <option value="" selected="selected">Unselected</option> <!-- Unselected option -->
               {% render 'product-variant-options', product: product, option: option, block: block %}
             </select>
             {% render 'icon-caret' %}
           </div>
+
+        {% comment %}
+          adding a script here to make the product not buyable as the buyer lands the page
+          because the size selector now need an option to be selected first to enable buying the product
+        {% endcomment %}
+          <script>
+            // JavaScript to select "Unselected" option on page load
+            document.addEventListener('DOMContentLoaded', function () {
+              var selectElement = document.getElementById("Option-{{ section.id }}-{{ forloop.index0 }}");
+              selectElement.value = "";
+              if(selectElement.value == ""){
+                const addToCart_disable = document.getElementById('ProductSubmitButton-template--20478647468335__main');
+                addToCart_disable.setAttribute('disabled', '');
+              }
+            });
+          </script>
         </div>
+      {%- endunless -%}
       {%- endfor -%}
 
       <script type="application/json">
         {{ product.variants | json }}
       </script>
     </variant-selects>
-  {%- endif -%}
 {%- endunless -%}
 
 <noscript class="product-form__noscript-wrapper-{{ section.id }}">

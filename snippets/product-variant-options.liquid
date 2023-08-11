@@ -44,8 +44,13 @@
       endcase
     endfor
   -%}
-
-  {%- if block.settings.picker_type == 'button' -%}
+  {% comment %} 
+  changing the condition here to display the required input fields 
+  regardless of the option selected from the admin panel as this now shows
+  select-box(drop-down) for size selector and radio-buttons(swatches) for
+  color selector
+  {% endcomment %}
+    {% unless option.name == "Size" %}
     <input
       type="radio"
       id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
@@ -59,16 +64,31 @@
         class="disabled"
       {% endif %}
     >
-    <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
-      {{ value -}}
-      <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
-    </label>
-  {%- elsif block.settings.picker_type == 'dropdown' -%}
+      
+    {% comment %} 
+      Displaying swatches only on color options that 
+      contain metfields for the product or product 
+      variant being displayed 
+    {% endcomment %}
+      {{ product.variants[forloop.index0].metafields.color.values }}
+      {% if product.variants[forloop.index0].metafields.color.value and option.name == 'Color' %}
+        <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}" style="background-color: {{ value }}">
+        </label>
+      {% else %}
+        <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+          {{ value }}
+        </label>
+      {% endif %}
+  {% endunless %}
+
+   {% unless option.name == "Color" %}
     <option
       value="{{ value | escape }}"
-      {% if option.selected_value == value %}
-        selected="selected"
-      {% endif %}
+    {% comment %}
+      disabling the selected check as we are  now rendering and 
+      additional added option which is required to be selected 
+      by default either landing on a product or page reloading 
+    {% endcomment %}
     >
       {% if option_disabled -%}
         {{- 'products.product.value_unavailable' | t: option_value: value -}}
@@ -76,5 +96,6 @@
         {{- value -}}
       {%- endif %}
     </option>
-  {%- endif -%}
+  {% endunless %}
+ 
 {%- endfor -%}
