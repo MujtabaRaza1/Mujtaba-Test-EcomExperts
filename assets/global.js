@@ -996,13 +996,13 @@ class VariantSelects extends HTMLElement {
       if(dropDown_new.value == ''){
         disable_byClass.style.pointerEvents = 'none';
         disable_byClass.style.opacity = '0.5';
-        disable_byClass2[0].style.pointerEvents = 'none';
-        disable_byClass2[0].style.opacity = '0.4';
+        disable_byClass2.style.pointerEvents = 'none';
+        disable_byClass2.style.opacity = '0.4';
       }else{
         disable_byClass.style.pointerEvents = 'all';
         disable_byClass.style.opacity = '1';
-        disable_byClass2[0].style.pointerEvents = 'all';
-        disable_byClass2[0].style.opacity = '1';
+        disable_byClass2.style.pointerEvents = 'all';
+        disable_byClass2.style.opacity = '1';
       }
     }else{
       //
@@ -1270,8 +1270,8 @@ class VariantRadios extends VariantSelects {
     const disable_byClass2 = addtocartForm.querySelector('.product-form__buttons .shopify-payment-button button');
       disable_byClass.style.pointerEvents = 'none';
       disable_byClass.style.opacity = '0.5';
-      disable_byClass2[0].style.pointerEvents = 'none';
-      disable_byClass2[0].style.opacity = '0.4';
+      disable_byClass2.style.pointerEvents = 'none';
+      disable_byClass2.style.opacity = '0.4';
     }
   }
 }
