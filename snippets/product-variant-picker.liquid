@@ -13,9 +13,7 @@
 {% comment %}
    Adjusted the if condition here as we now need both the selctors in 1 product
  {% endcomment %}
- <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
- <meta http-equiv="pragma" content="no-cache">
- <meta http-equiv="expires" content="0">
+  
     <variant-radios
       id="variant-radios-{{ section.id }}"
       class="no-js-hidden"
@@ -78,9 +76,9 @@
             // JavaScript to select "Unselected" option on page load
             document.addEventListener('DOMContentLoaded', function () {
               var selectElement = document.getElementById("Option-{{ section.id }}-{{ forloop.index0 }}");
-              selectElement.value=""
+              selectElement.value = "";
               if(selectElement.value == ""){
-                const addToCart_disable = document.getElementById('ProductSubmitButton-template--20479416959279__main');
+                const addToCart_disable = document.getElementById('ProductSubmitButton-template--20478647468335__main');
                 addToCart_disable.setAttribute('disabled', '');
               }
             });
