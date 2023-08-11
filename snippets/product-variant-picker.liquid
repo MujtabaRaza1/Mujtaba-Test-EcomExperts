@@ -78,13 +78,12 @@
             // JavaScript to select "Unselected" option on page load
             document.addEventListener('DOMContentLoaded', function () {
               var selectElement = document.getElementById("Option-{{ section.id }}-{{ forloop.index0 }}");
-              var selectedIndex = selectElement.selectedIndex; // Get the index of the currently selected option
               if(selectElement.value == ""){
                 const addToCart_disable = document.getElementById('ProductSubmitButton-template--20479416959279__main');
                 addToCart_disable.setAttribute('disabled', '');
               }else{
-                const addToCart_disable1 = document.getElementById('ProductSubmitButton-template--20479416959279__main');
-                addToCart_disable1.sremoveAttribute('disabled', '');
+                const addToCart_disable = document.getElementById('ProductSubmitButton-template--20479416959279__main');
+                addToCart_disable.removeAttribute('disabled', '');
               }
             });
           </script>
